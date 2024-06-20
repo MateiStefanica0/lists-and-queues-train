@@ -1,0 +1,128 @@
+Structuri:
+        Pentru implementarea trenului in sine(doar a trenului, fara mecanic) 
+    am folosit o structura de lista dublu inlantuita circulara cu santinela,
+    asa cum se cerea, pe care am numit-o TVagon, respectiv *TTren.
+        Pentru implementarea structurii cerute (cea cu mecanic) am folosit 
+    doi pointeri de tip TTren care indica spre santinela/locomotiva(tren) si
+    spre pozitia actuala a mecanicului in tren (mecanic), pe care am numit-o
+    TJoc (pentru ca trenul e de jucarie)
+        Pentru implementarea cozii de comenzi, am folosit o lista dublu
+    inlantuita si o coada ce are cate un pointer catre inceputul si sfarsitul
+    listei
+        Definitiile tuturor structurilor si antetele functiilor se gasesc in
+    fisierul functii.h
+
+Functii:
+        * toate functiile care afiseaza ceva primesc ca parameru un pointer de tip
+    FILE, pentru a stii in ce fisier sa scrie
+    alocVagon:
+            - aloca un nou vagon pentru tren, in care pune caracterul '#' si
+        testeaza alocarea
+    initTren:
+            - initializeaza structura de tren cu santinela, pe care o aloca si ii 
+        face legaturile catre sine, pentru ca lista este circulara
+            - testeaza alocarea
+    initJoc:
+            - aloca structura de joc in sine, folosindu-se de functiile
+        alocVagon si initTren si testeaza alocarile
+            - dupa ce aloca primul vagon, il leaga de locomotiva si face
+        legaturile de lista dublu inlantuita circulara
+    freeJoc:
+            - foloseste functia clearAll, pe care o voi explica mai jos, 
+        in urma careia trenul ramane cu un singur vagon alocat
+            - elibereaza si acel vagon, santinela si elementul TJoc*, 
+        transmis ca pointer, pentru ca eliberarea lui sa aiba efect in main
+    initCoada:
+            - aloca un element de tip TCoada*, testeaza alocarea
+    inserareCoada:
+            - aloca o celula de tip TListaComenzi* si testeaza alocarea
+            - copiaza informatia din parametru in noua celula si o leaga
+        la finalul cozii
+    extragereCoada:
+            - elibereaza prima celula din lista, reface legaturile si salveaza
+        informatia din respectiva celula in sirul de caractere primit ca
+        parametru (pointer) pentru a putea fi folosit in main
+    freeCoada:
+            - elibereaza toate elementele din coada pana la ultimul
+            - il elibereaza si pe ultimul si apoi elementul de tip TCoada*,
+        transmis ca pointer, pentru ca eliberarea lui sa aiba efect in main
+    write:
+            - scrie in celula in care se afla mecanicul informatia data
+    show:
+            - parcurge trenul cu un pointer auxiliar si afiseaza caracterele,
+        vagonul in care e mecanicul fiind marcat cu "||"
+    showCurrent: 
+            - afiseaza doar caracterul din vagonul in care se afla mecanicul
+    insertRight:
+            - aloca vagon nou si testeaz aalocarea
+            - foloseste doi pointeri auxiliari care indica spre locul in care
+        se afla mecanicul si spre urmatorul vagon de dupa mecanic (intre
+        aceste doua vagoane trebuie inserat vagonul nou) pentru a face mai usor
+        legaturile
+            - muta mecanicul in noul vagon
+    insertLeft:
+            - testeaza daca mecanicul nu se afla deja in primul vagon, caz in
+        care afiseaza "ERROR"
+            - in rest acelasi rationament ca la insertRight
+    moveLeft:
+            - daca mecanicul se afla in primul vagon, il muta la finalul, 
+        trenului, altfel doar in muta la stanga
+    moveRight:
+            - daca mecanicul e deja in ultimul vagon, foloseste functia de 
+        insertRight pentru a adauga un vagonu nou
+            - muta mecanicul in vagonul din dreapta sa
+    clearCell:
+            - daca trenul are un singur vagon, il sterge, elibereaza jocul si
+        il reinitializeza
+            - daca trenul are mai multe vagoane, muta mecanicul la stanga cu
+        cu ajutorul functiei moveLeft, reface legaturile vagoanelor si il
+        sterge pe cel in care era mecanicul inainte
+    clearAll:
+            - foloseste un pointer pentru a parcurge toate vagoanele si le
+        elibereaza, apoi eliberaza si locomotiva si jocul
+            - reinitializeaza jocul
+    switchCoada:
+            - foloseste un pointer pentru a parcurge coada si a afla cate
+        elemente are
+            - foloseste doi pointeri, unul la inceputul cozii si unul la
+        sfarsit, si interschimba elementele diametral opuse fata de centrul
+        cozii pana ajunge la mijloc
+            - astfel, rezulta coada cu comenzile in ordine inversa
+    searchRight:
+            - foloseste un pointer pentru a afla cate vagoane sunt la dreapta
+        mecanicului (inclusiv mecanicul)
+            - aloca un sir de caractere de lungimea respectiva, iar apoi
+        parcurge incepand cu vagonul in care se afla mecanicul, catre finalul
+        trenului si copiaza in sir, caracter cu caracter, ce se afla in fiecare
+        vagon
+            - foloseste functia strstr pentru a obtine un pointer catre locul
+        din sirul de caractere in care incepe secventa cautata
+            - daca secventa nu exista, strstr returneaza NULL si afiseaza
+        textul "ERROR"
+            - daca secventa exista, calculeaza numarul de vagoane cu care
+        trebuie mutat mecanicul pentru a ajunge pe ultima pozitie din
+        din secventa cu ajutorul lungimilor sirilor
+            - foloseste functia moveRight pentru a ajunge la pozitia dorita
+    searchLeft:
+            - functioneaza pe acelasi rationament ca searchRight, singura
+        singura diferenta fiind directa de parcurgere
+    search:
+            - functioneaza pe acelasi rationament ca searchRight, doar ca 
+        dupa ce ajunge cu parcurgerile la finalul trenului, mai face o
+        parcurgere de la primul vagon pana la vagonul de dinaintea mecanicului
+
+main:
+        - initializeaza jocul si coada si testeaza alocarile
+        - deschide fisierele de intrare si iesire
+        - citeste numarul de elemente si apoi incepe sa citeasca comenzile
+        - la fiecare comanda citita sterge caracterul '\n' de la final
+        - comenzile de tip query le executa imediat ce le intalneste, 
+    apeland functiile aferente
+        - daca intalneste orice comanda in afara de cele de tip query sau
+    comanda execute, o baga in coada de comenzi
+        - cand primeste comanda execute scoate cate o comanda din coada si,
+    in functie de comanda, apeleaza functia necesara
+        - la comenzile ce au si parametru, compara doar primele n caractere
+    din comanda scoasa din coada (n fiind lungimea cuvantului din care e 
+    formata comanda; de exemplu, SEARCH_RIGHT)
+        - inchide fisierele si elibereaza coada si jocul
